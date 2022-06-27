@@ -1,9 +1,12 @@
 import React from 'react';
 
+// pages
+import Home from 'pages/Home'
+
 const App = () => {
   return (
     <div className="App">
-      <h1>ENS-playground</h1>
+      <Home />
     </div>
   );
 }
