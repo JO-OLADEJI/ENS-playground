@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import { Web3ReactProvider, Web3ReactHooks } from "@web3-react/core";
 import { MetaMask } from "@web3-react/metamask";
 import { CoinbaseWallet } from "@web3-react/coinbase-wallet";
@@ -8,20 +8,20 @@ import {
   coinbaseWallet,
   metaMask,
   metaMaskHooks,
-  coinbaseWalletHooks
-} from 'connectors'
-import { useState } from 'react';
+  coinbaseWalletHooks,
+} from "connectors";
+import { useState } from "react";
 
 // utils
-import { isCoinbase } from 'utils/connector';
+import { isCoinbase } from "utils/connector";
 
 const connectors: [MetaMask | CoinbaseWallet, Web3ReactHooks][] = [
   [metaMask, metaMaskHooks],
-  [coinbaseWallet, coinbaseWalletHooks]
+  [coinbaseWallet, coinbaseWalletHooks],
 ];
 
 interface Web3ProviderProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const Web3Provider = ({ children }: Web3ProviderProps) => {
@@ -32,29 +32,27 @@ const Web3Provider = ({ children }: Web3ProviderProps) => {
   useEffect(() => {
     if (isCoinbase()) {
       void coinbaseWallet.connectEagerly().catch(() => {
-        setTriedCoinbase(true)
-        console.debug('Failed to connect eagerly to coinbase wallet')
-      })
+        setTriedCoinbase(true);
+        console.debug("Failed to connect eagerly to coinbase wallet");
+      });
     } else {
-      setTriedCoinbase(true)
+      setTriedCoinbase(true);
     }
-  }, [])
+  }, []);
 
   // then try metamask if coinbase fails
   useEffect(() => {
-    if (triedCoinbase && !tried) {
+    if (triedCoinbase && !tried && !isCoinbase()) {
       void metaMask.connectEagerly().catch(() => {
-        setTried(true)
-        console.debug('Failed to connect eagerly to metamask')
-      })
+        setTried(true);
+        console.debug("Failed to connect eagerly to metamask");
+      });
     }
-  }, [triedCoinbase, tried])
+  }, [triedCoinbase, tried]);
 
   return (
-    <Web3ReactProvider connectors={connectors}>
-      {children}
-    </Web3ReactProvider>
+    <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>
   );
-}
+};
 
 export default Web3Provider;

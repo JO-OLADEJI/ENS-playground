@@ -1,37 +1,34 @@
-import React from 'react';
-import { useWeb3React } from '@web3-react/core';
-import styled from 'styled-components';
+import React from "react";
+import { useWeb3React } from "@web3-react/core";
+import styled from "styled-components";
 
 // components
-import { ButtonPrimary, ButtonConnected } from '../Button';
+import { ButtonPrimary, ButtonConnected } from "../Button";
 
 // connectors
-import { metaMask, coinbaseWallet } from 'connectors';
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
+import { metaMask, coinbaseWallet } from "connectors";
+import { CoinbaseWallet } from "@web3-react/coinbase-wallet";
 
 // utils
-import { shortenAddress } from 'utils';
-import { isCoinbase } from 'utils/connector';
+import { shortenAddress } from "utils";
+import { isCoinbase } from "utils/connector";
 
 // assets
-import CoinbaseWalletIcon from 'assets/coinbaseWalletIcon.svg';
-import Identicon from 'assets/blockies.png';
+import CoinbaseWalletIcon from "assets/coinbaseWalletIcon.svg";
+import Identicon from "assets/blockies.png";
 
 const NavWrapper = styled.nav`
-  border-bottom: 1px solid grey;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #1B73E9;
+  padding: 2rem;
 `;
 
 const Icon = styled.img<{ size: number }>`
-  height: ${({ size }) => size.toString() + 'px'};
-  width: ${({ size }) => size.toString() + 'px'};
+  height: ${({ size }) => size.toString() + "px"};
+  width: ${({ size }) => size.toString() + "px"};
   border-radius: 50%;
-  margin-left: .5rem;
-  border: 1px solid #1B73E9;
+  margin-left: 0.5rem;
 `;
 
 const ConnectedWrapper = styled.div`
@@ -43,19 +40,17 @@ const ConnectedWrapper = styled.div`
 const ConnectorIcon = () => {
   const { connector } = useWeb3React();
   if (connector instanceof CoinbaseWallet) {
-    return (
-      <Icon src={CoinbaseWalletIcon} alt="coinbase icon" size={20} />
-    );
+    return <Icon src={CoinbaseWalletIcon} alt="coinbase icon" size={20} />;
   }
-  return (
-    <Icon src={Identicon} alt="metamask icon" size={20} />
-  );
-}
+  return <Icon src={Identicon} alt="metamask icon" size={20} />;
+};
 
 const Nav = () => {
-  const { account } = useWeb3React()
+  const { account } = useWeb3React();
 
-  const handleConnectWallet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleConnectWallet = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
     if (window.ethereum) {
       if (isCoinbase()) {
@@ -64,27 +59,26 @@ const Nav = () => {
         void metaMask.activate();
       }
     } else {
-      alert('Please install a Wallet');
+      alert("Please install a Wallet");
     }
-  }
+  };
 
   return (
     <NavWrapper>
-      {account
-        ? (
-          <ButtonConnected>
-            <ConnectedWrapper>
-              {shortenAddress(account)}
-              <ConnectorIcon />
-            </ConnectedWrapper>
-          </ButtonConnected>
-        ) : (
-          <ButtonPrimary onClick={handleConnectWallet}>
-            Connect Wallet
-          </ButtonPrimary>
-        )}
+      {account ? (
+        <ButtonConnected>
+          <ConnectedWrapper>
+            {shortenAddress(account)}
+            <ConnectorIcon />
+          </ConnectedWrapper>
+        </ButtonConnected>
+      ) : (
+        <ButtonPrimary onClick={handleConnectWallet}>
+          Connect Wallet
+        </ButtonPrimary>
+      )}
     </NavWrapper>
   );
-}
+};
 
 export default Nav;
